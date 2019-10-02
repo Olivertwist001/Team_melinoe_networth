@@ -48,6 +48,36 @@ const login = async (req, res) => {
     console.log("ghh", email, password);
     const isLogin = await model().select("*", "email=$1", [email]);
 
+
+     if (!email.includes("@")&&!email.includes(".com") {
+          return res.status(httpStatus.UNAUTHORIZED).json({
+                status: httpStatus.UNAUTHORIZED,
+                error: "Invalid email or password..No required fields"
+              });
+        }
+
+    var emailArr = email.split('@');
+
+    var isnum = /^\d+$/.test(emailArr[0]);
+
+    if (isnum){
+        return res.status(httpStatus.UNAUTHORIZED).json({
+                        status: httpStatus.UNAUTHORIZED,
+                        error: "Invalid email or password..Only numbers"
+                      });
+    }
+    //PASSWORD CHECK
+    var hasNumber = /\d/;
+    hasNumber.test(password);
+
+    if(!password.includes(password.toUpperCase())&&!password.includes(password.toLowerCase()&&!(hasNumber)){
+        return res.status(httpStatus.UNAUTHORIZED).json({
+                                status: httpStatus.UNAUTHORIZED,
+                                error: "Invalid email or password..Password not correct"
+                              });
+    }
+
+
     if (isLogin[0] && (await argon2.verify(isLogin[0].password, password))) {
       const jwToken = generateToken(isLogin[0].id, isLogin[0].email);
       return res.status(httpStatus.OK).json({
